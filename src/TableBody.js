@@ -34,7 +34,17 @@ class TableBody extends React.Component{
 
     var tableRows = this.props.data.map(function(data, r){
       var tableColumns = this.props.columns.map(function(column, i){
-        var fieldValue = data[column.name];
+        var fieldValue = null;
+
+        if( column.name.indexOf('.') != -1 ){
+          var depth = column.name.split('.');
+          while(depth.length > 0){
+            fieldValue = fieldValue ? fieldValue[depth.shift()] : data[depth.shift()]
+          }
+        }
+        else{
+          fieldValue = data[column.name];
+        }
         if(this.editing &&
           column.name !== this.props.keyField && // Key field can't be edit
           column.editable && // column is editable? default is true, user can set it false
